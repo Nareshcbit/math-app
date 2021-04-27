@@ -6,6 +6,12 @@
   <script type="text/javascript">
     var greenTick = "../images/greentick-64.ico"
     var redCross = "../images/redcross-64.ico"
+    var operation = "subtract"
+    function randomNumber(min, max) { 
+      let randomNum = Math.random() * (max - min) + min;
+      return Math.floor(randomNum)
+    } 
+
     function checkAnswer(){
       $("#result").prop( "disabled", true );
       let addend1 = parseInt($("#addend-1").text())
@@ -17,21 +23,46 @@
         case '+':
           expected = addend1 + addend2
           break;
+        case '-':
+          expected = addend1 - addend2
+        break;
       }
-      console.log(addend1)
-      console.log(addend2)
-      console.log(userAnswer)
+      console.log("addend1: " + addend1)
+      console.log("addend2: " + addend2)
+      console.log("expected: " + expected)
+      console.log("userAnswer: " + userAnswer)
       console.log(operator)
       if ( expected == userAnswer) {
         $("#validation").attr("src", greenTick).show()
       }else{
         $("#validation").attr("src", redCross).show()
       }
-
-
+    }
+    function getNextQuestion(){
+      $("#result").prop( "disabled", false );
+      $("#result").val("")
+      $("#validation").hide()
       
+      let number1 = randomNumber(1, 20)
+      let number2 = randomNumber(1, 20)
+      if ( number1 > number2){
+        $("#addend-1").text(number1)
+        $("#addend-2").text(number2)
+      }else{
+        $("#addend-1").text(number2)
+        $("#addend-2").text(number1)
+      }
+      switch(operation){
+        case 'subtract':
+          $("#operator").text("-");
+          break;
+        case 'add':
+          $("#operator").text("+");
+          break; 
+      }
     }
     $(function() {
+      getNextQuestion()
     })
   </script>
   <style>
@@ -59,13 +90,13 @@
     <h1 id="title">Subtraction</h1>
     <div class="row">
       <div class="col-sm-1">
-        <p class="question" id="addend-1">5</p>
+        <p class="question" id="addend-1"></p>
       </div>
       <div class="col-sm-1">
-        <p class="question" id="operator">+</p>
+        <p class="question" id="operator"></p>
       </div>
       <div class="col-sm-1">
-        <p class="question" id="addend-2">2</p>
+        <p class="question" id="addend-2"></p>
       </div>
       <div class="col-sm-1">
         <p class="question" id="equals">=</p>
@@ -79,8 +110,11 @@
     </div>
     <div class="row" id="buttonsDiv">
       <div class="col-sm-3"></div>
-      <div class="col-sm-2">
+      <div class="col-sm-1">
         <button type="button" class="btn btn-info" onclick="checkAnswer()">Submit</button>
+      </div>
+      <div class="col-sm-1">
+        <button type="button" class="btn btn-info" onclick="getNextQuestion()">Next</button>
       </div>
       <div class="col-sm-5"></div>
     </div>
