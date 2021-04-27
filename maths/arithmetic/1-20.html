@@ -1,0 +1,45 @@
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"></link>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  <script type="text/javascript">
+    $(function() {
+      $("#test").text("Hello")
+    })
+  </script>
+  <style>
+    .question{
+      border: none;
+    }
+    .question, .answer {
+      font-size: 48px;
+    }
+  </style>
+</head>
+<body class='bg-white'>
+  <h1>Hello World</h1>
+  <div class="mquestion">
+    <p id="test"></p>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-2">
+          <input type="text" class="question" id="addend-1" required minlength="1" maxlength="2" value="5">
+        </div>
+        <div class="col-sm-2">
+          <input type="text" class="question" id="operator" required minlength="1" maxlength="2" value="+">
+        </div>
+        <div class="col-sm-2">
+          <input type="text" class="question" id="addend-2" required minlength="1" maxlength="2" value="2">
+        </div>
+        <div class="col-sm-2">
+          <input type="text" class="question" id="equals" required minlength="1" maxlength="2" value="=">
+        </div>
+        <div class="col-sm-2">
+          <input type="text" class="answer" id="result" required minlength="1" maxlength="2" size="2">
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
