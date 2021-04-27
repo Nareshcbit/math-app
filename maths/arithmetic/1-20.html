@@ -7,12 +7,18 @@
     var greenTick = "../images/greentick-64.ico"
     var redCross = "../images/redcross-64.ico"
     var operation = "subtract"
+    var maxQuestions = 5;
+    var questionNumber = 0;
+    var results = {}
+    results["questions"] = []
     function randomNumber(min, max) { 
       let randomNum = Math.random() * (max - min) + min;
       return Math.floor(randomNum)
     } 
 
     function checkAnswer(){
+      $("#submitButton").prop( "disabled", true );
+      
       $("#result").prop( "disabled", true );
       let addend1 = parseInt($("#addend-1").text())
       let addend2 = parseInt($("#addend-2").text())
@@ -32,17 +38,36 @@
       console.log("expected: " + expected)
       console.log("userAnswer: " + userAnswer)
       console.log(operator)
+
+      let questionResult = "wrong";
       if ( expected == userAnswer) {
         $("#validation").attr("src", greenTick).show()
+        questionResult = "right"
       }else{
         $("#validation").attr("src", redCross).show()
+        questionResult = "wrong"
+        
       }
+      results["questions"].push(questionResult)
+
+      if (questionNumber >= maxQuestions){
+        showResults()
+      }else{
+        $("#nextButton").show()
+        $("#nextButton").prop("disabled", false )
+      }
+      
     }
     function getNextQuestion(){
       $("#result").prop( "disabled", false );
       $("#result").val("")
       $("#validation").hide()
-      
+      questionNumber++
+
+      if (questionNumber >=  maxQuestions){
+        $("#nextButton").hide();
+      }
+
       let number1 = randomNumber(1, 20)
       let number2 = randomNumber(1, 20)
       if ( number1 > number2){
@@ -60,8 +85,33 @@
           $("#operator").text("+");
           break; 
       }
+      $("#nextButton").prop("disabled", true )
+      $("#submitButton").prop( "disabled", false );
+    }
+    function showResults(){
+      console.log(JSON.stringify(results));
+      let numRight = 0;
+      let numWrong = 0;
+      for ( let i=0; i<results["questions"].length; i++){
+          if ( results["questions"][i] == "right"){
+            numRight++
+            continue;
+          }
+          numWrong++;
+      }
+      $("#right").html(numRight)
+      $("#wrong").html(numWrong)
+      $("#resultsDiv").show()
+      $("#nextTest").show()
+
+    }
+
+    function nextTest(){
+      location.reload();
     }
     $(function() {
+      $("#resultsDiv").hide()
+      $("#nextTest").hide()
       getNextQuestion()
     })
   </script>
@@ -78,11 +128,21 @@
     }
     #title{
       margin-bottom: 40px;
+      color: #351c75;
     }
     #validation{
       margin-top: 20px;
       margin-left: 20px;
     }
+    .report.right{
+      font-size: 24px;
+      color: green;
+    }
+    .report.wrong{
+      font-size: 24px;
+      color:red;
+    }
+
   </style>
 </head>
 <body class='bg-white'>
@@ -111,13 +171,41 @@
     <div class="row" id="buttonsDiv">
       <div class="col-sm-3"></div>
       <div class="col-sm-1">
-        <button type="button" class="btn btn-info" onclick="checkAnswer()">Submit</button>
+        <button type="button" id="submitButton" class="btn btn-info" onclick="checkAnswer()">Submit</button>
       </div>
       <div class="col-sm-1">
-        <button type="button" class="btn btn-info" onclick="getNextQuestion()">Next</button>
+        <button type="button" id="nextButton" class="btn btn-info" onclick="getNextQuestion()">Next</button>
       </div>
+      <div class="col-sm-1">
+      </div>
+      <div class="col-sm-1">
+        <button type="button" id="nextTest" class="btn btn-secondary" onclick="nextTest()">Take next test</button>
+      </div>
+
       <div class="col-sm-5"></div>
     </div>
+    <div class="row" id="resultsDiv">
+      <div class="col-sm-3">
+        <div class="row">
+          <div class="col-sm-6">
+            <p class="report right">Correct</p>
+          </div>
+          <div class="col-sm-6">
+            <p class= "report right" id="right"></p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <p class="report wrong">Incorrect</p>
+          </div>
+          <div class="col-sm-6">
+            <p class= "report wrong" id="wrong"></p>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+    
   </div>
 </body>
 </html>
