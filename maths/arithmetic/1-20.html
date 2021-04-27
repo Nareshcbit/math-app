@@ -4,8 +4,32 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
   <script type="text/javascript">
+    var greenTick = "../images/greentick-64.ico"
+    var redCross = "../images/redcross-64.ico"
     function checkAnswer(){
-      console.log("Check Answer")
+      $("#result").prop( "disabled", true );
+      let addend1 = parseInt($("#addend-1").text())
+      let addend2 = parseInt($("#addend-2").text())
+      let operator = $("#operator").text()
+      let userAnswer = parseInt($("#result").val())
+      let expected = null
+      switch( operator) {
+        case '+':
+          expected = addend1 + addend2
+          break;
+      }
+      console.log(addend1)
+      console.log(addend2)
+      console.log(userAnswer)
+      console.log(operator)
+      if ( expected == userAnswer) {
+        $("#validation").attr("src", greenTick).show()
+      }else{
+        $("#validation").attr("src", redCross).show()
+      }
+
+
+      
     }
     $(function() {
     })
@@ -15,7 +39,8 @@
       border: none;
     }
     .question, .answer {
-      font-size: 48px;
+      font-size: 60px;
+      text-align: center;
     }
     #buttonsDiv{
       margin-top: 40px;
@@ -23,30 +48,37 @@
     #title{
       margin-bottom: 40px;
     }
+    #validation{
+      margin-top: 20px;
+      margin-left: 20px;
+    }
   </style>
 </head>
 <body class='bg-white'>
   <div class="container">
     <h1 id="title">Subtraction</h1>
     <div class="row">
-      <div class="col-sm-2">
+      <div class="col-sm-1">
         <p class="question" id="addend-1">5</p>
       </div>
-      <div class="col-sm-2">
+      <div class="col-sm-1">
         <p class="question" id="operator">+</p>
       </div>
-      <div class="col-sm-2">
+      <div class="col-sm-1">
         <p class="question" id="addend-2">2</p>
       </div>
-      <div class="col-sm-2">
+      <div class="col-sm-1">
         <p class="question" id="equals">=</p>
       </div>
-      <div class="col-sm-2">
+      <div class="col-sm-1">
         <input type="text" class="answer" id="result" required minlength="1" maxlength="2" size="2">
+      </div>
+      <div class="col-sm-1">
+        <img id="validation">
       </div>
     </div>
     <div class="row" id="buttonsDiv">
-      <div class="col-sm-5"></div>
+      <div class="col-sm-3"></div>
       <div class="col-sm-2">
         <button type="button" class="btn btn-info" onclick="checkAnswer()">Submit</button>
       </div>
