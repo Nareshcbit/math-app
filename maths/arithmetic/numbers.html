@@ -58,14 +58,8 @@
       console.log("questionNumber: " + questionNumber)
       console.log("maxQuestions: " + maxQuestions)
       if (questionNumber >= maxQuestions){
-        showResults()
-        let level = sessionStorage.getItem("currentLevel")
         sessionStorage.setItem("questionNumber", 0);
-        level++;
-        sessionStorage.setItem("currentLevel", level)
-        if ( level >= 5){
-          showResults()
-        } 
+        showResults()
       }else{
         $("#nextButton").show()
         $("#nextButton").prop("disabled", false )
@@ -130,16 +124,31 @@
       $("#right").html(numRight)
       $("#wrong").html(numWrong)
       $("#resultsDiv").show()
-      $("#nextTest").show()
+      
+      let level = sessionStorage.getItem("currentLevel")
+      sessionStorage.setItem("questionNumber", 0);
+      level++;
+      sessionStorage.setItem("currentLevel", level)
+      if ( level > 5){
+        $("#nextTest").hide()
+        $("#goToHome").show()
+      }else{
+        $("#nextTest").show()
+        $("#goToHome").hide()
+      } 
 
     }
 
     function nextTest(){
       location.reload();
     }
+    function goToHome(){
+      location.href = "../../index.html";
+    }
     $(function() {
       $("#resultsDiv").hide()
       $("#nextTest").hide()
+      $("#goToHome").hide()
       getNextQuestion()
     })
   </script>
@@ -212,20 +221,20 @@
       <p id="questionTitle"></p>
     </div>
     <div class="row">
-      <div class="col-1">
+      <div class="col-3">
         <p class="question" id="addend-1"></p>
       </div>
       <div class="col-1">
         <p class="question" id="operator"></p>
       </div>
-      <div class="col-1">
+      <div class="col-3">
         <p class="question" id="addend-2"></p>
       </div>
       <div class="col-1">
         <p class="question" id="equals">=</p>
       </div>
-      <div class="col-1">
-        <input type="text" class="answer" id="result" required minlength="1" maxlength="2" size="2">
+      <div class="col-3">
+        <input type="text" class="answer" id="result" required minlength="1" size="8">
       </div>
       <div class="col-1">
         <img id="validation">
@@ -233,10 +242,10 @@
     </div>
     <div class="row" id="buttonsDiv">
       <div class="col-3"></div>
-      <div class="col-2 ">
+      <div class="col-4">
         <button type="button" id="submitButton" class="btn btn-info" onclick="checkAnswer()">Submit</button>
       </div>
-      <div class="col-2">
+      <div class="col-4">
         <button type="button" id="nextButton" class="btn btn-info" onclick="getNextQuestion()">Next</button>
       </div>
     </div>
@@ -258,9 +267,14 @@
             <p id="wrong"></p>
           </div>
         </div>
-        <div class="row" id="nextTest">
+        <div class="row">
           <div class="col-12">
             <button type="button" id="nextTest" class="btn btn-secondary" onclick="nextTest()">Take next test</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <button type="button" id="goToHome" class="btn btn-secondary" onclick="goToHome()">Home</button>
           </div>
         </div>
       </div>
