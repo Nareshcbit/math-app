@@ -13,9 +13,9 @@
     var category = sessionStorage.getItem("category");
     var operation = sessionStorage.getItem("category");
     var questionNumber = sessionStorage.getItem("questionNumber");
-    $("#pageTitle").text(category) 
-    var results = {}
-    results["questions"] = []
+    $("#pageTitle").text(category)
+    var currentTestResults = {}
+    currentTestResults["questions"] = []
     function randomNumber(min, max) { 
       let randomNum = Math.random() * (max - min) + min;
       return Math.floor(randomNum)
@@ -53,7 +53,7 @@
         questionResult = "wrong"
         
       }
-      results["questions"].push(questionResult)
+      currentTestResults["questions"].push(questionResult)
       let questionNumber = sessionStorage.getItem("questionNumber");
       console.log("questionNumber: " + questionNumber)
       console.log("maxQuestions: " + maxQuestions)
@@ -111,34 +111,71 @@
 
     }
     function showResults(){
-      console.log(JSON.stringify(results));
+      console.log(JSON.stringify(currentTestResults));
       let numRight = 0;
       let numWrong = 0;
-      for ( let i=0; i<results["questions"].length; i++){
-          if ( results["questions"][i] == "right"){
+      for ( let i=0; i<currentTestResults["questions"].length; i++){
+          if ( currentTestResults["questions"][i] == "right"){
             numRight++
             continue;
           }
           numWrong++;
       }
-      $("#right").html(numRight)
-      $("#wrong").html(numWrong)
-      $("#resultsDiv").show()
-      
       let level = sessionStorage.getItem("currentLevel")
+      let allTests = sessionStorage.getItem("allTests")
+      if (!allTests){
+        allTests = {}
+      }else{
+        allTests = JSON.parse(allTests)
+      }
+      allTests[level] = {}
+      allTests[level]["results"] = currentTestResults
+      allTests[level]["right"] = numRight
+      allTests[level]["wrong"] = numWrong
+      sessionStorage.setItem("allTests", JSON.stringify(allTests))
+      currentTestResults = {}
+      currentTestResults["questions"] = []
+
       sessionStorage.setItem("questionNumber", 0);
       level++;
       sessionStorage.setItem("currentLevel", level)
+
       if ( level > 5){
+        showReport()
         $("#nextTest").hide()
         $("#goToHome").show()
       }else{
+        $('#allTests').hide()
+        $("#right").html(numRight)
+        $("#wrong").html(numWrong)
+        $("#resultsDiv").show()
         $("#nextTest").show()
         $("#goToHome").hide()
       } 
 
     }
-
+    function showReport(){
+      let allTests = sessionStorage.getItem("allTests")
+      if (!allTests){
+        allTests = {}
+      }else{
+        allTests = JSON.parse(allTests)
+      }
+      console.log(JSON.stringify(allTests))
+      var testIds = Object.keys(allTests) 
+      for ( let i=0; i<testIds.length; i++){
+        let testid = testIds[i]
+        let numRight = allTests[testid]["right"]
+        let numWrong = allTests[testid]["wrong"]
+        let tableRow = '<tr>'
+        tableRow += '<td>' + "Test " + testid + '</td>'
+        tableRow += '<td>' + numRight + '</td>'
+        tableRow += '<td>' + numWrong + '</td>'
+        tableRow += '</tr>'
+        $('#allTests tr:last').after(tableRow);
+      }
+      $('#allTests').show()
+    }
     function nextTest(){
       location.reload();
     }
@@ -149,6 +186,7 @@
       $("#resultsDiv").hide()
       $("#nextTest").hide()
       $("#goToHome").hide()
+      $('#allTests').hide()
       getNextQuestion()
     })
   </script>
@@ -186,9 +224,11 @@
     .report.value{
       text-align: center;
     }
-    #resultsDiv, #nextTest{
+    #resultsDiv, #nextTest, #reportDiv, #allTests{
       margin-top: 2%;
     }
+
+    
     /* For mobile phones: */
 [class*="col-"] {
   width: 100%;
@@ -268,17 +308,37 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-12">
-            <button type="button" id="nextTest" class="btn btn-secondary" onclick="nextTest()">Take next test</button>
+          <div class="col-5">
+            <button type="button" id="nextTest" class="btn btn-warning" onclick="nextTest()">Take next test</button>
           </div>
         </div>
-        <div class="row">
-          <div class="col-12">
-            <button type="button" id="goToHome" class="btn btn-secondary" onclick="goToHome()">Home</button>
+        <div class="row" id="reportDiv">
+          <div class="col-5">
+            <button type="button" id="showReport" class="btn btn-secondary" onclick="showReport()">Show progress</button>
           </div>
         </div>
       </div>
+    </div>
+    <div>
+      <div>
+        <table class="table" id="allTests">
+          <tr>
+            <th>Test</th>
+            <th>Correct</th>
+            <th>InCorrect</th>
+          </tr>
+        </table>
       </div>
+      <div class="row">
+        <div class="col-12">
+          <button type="button" id="goToHome" class="btn btn-secondary" onclick="goToHome()">Home</button>
+        </div>
+      </div>
+    </div>
+    </div>
+    </div>
+    <div>
+
     </div>
     
   </div>
