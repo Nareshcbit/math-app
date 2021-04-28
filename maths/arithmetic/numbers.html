@@ -7,9 +7,12 @@
   <script type="text/javascript">
     var greenTick = "../images/greentick-64.ico"
     var redCross = "../images/redcross-64.ico"
-    var operation = "subtract"
-    var maxQuestions = 2;
-    var questionNumber = 0;
+    
+    var maxQuestions = sessionStorage.getItem("testSize")
+    var level = sessionStorage.getItem("currentLevel")
+    var category = sessionStorage.getItem("category");
+    var operation = sessionStorage.getItem("category");
+    var questionNumber = sessionStorage.getItem("questionNumber");
     var results = {}
     results["questions"] = []
     function randomNumber(min, max) { 
@@ -53,6 +56,12 @@
 
       if (questionNumber >= maxQuestions){
         showResults()
+        let level = sessionStorage.getItem("currentLevel")
+        if ( level >= 5){
+          $("#nextButton").hide()
+        } 
+        level++;
+        sessionStorage.setItem("currentLevel", level)
       }else{
         $("#nextButton").show()
         $("#nextButton").prop("disabled", false )
@@ -60,17 +69,22 @@
       
     }
     function getNextQuestion(){
+      let level = (sessionStorage.getItem("currentLevel")).toString()
+      console.log("level:" + level)
+      console.log("operation: " + operation)
+      console.log(JSON.stringify(LEVELS))
       $("#result").prop( "disabled", false );
       $("#result").val("")
       $("#validation").hide()
       questionNumber++
+      sessionStorage.setItem("questionNumber", questionNumber);
 
       if (questionNumber >=  maxQuestions){
         $("#nextButton").hide();
       }
 
-      let number1 = randomNumber(10, 20)
-      let number2 = randomNumber(1, 20)
+      let number1 = randomNumber(LEVELS[level]["min"], LEVELS[level]["max"])
+      let number2 = randomNumber(LEVELS[level]["min"], LEVELS[level]["max"])
       if ( number1 > number2){
         $("#addend-1").text(number1)
         $("#addend-2").text(number2)
@@ -80,9 +94,11 @@
       }
       switch(operation){
         case 'subtract':
+        case 'subtraction':
           $("#operator").text("-");
           break;
         case 'add':
+        case 'addition':
           $("#operator").text("+");
           break; 
       }
@@ -236,4 +252,5 @@
     
   </div>
 </body>
+<script src="levels.js"></script>
 </html>
