@@ -57,7 +57,7 @@
       let questionNumber = sessionStorage.getItem("questionNumber");
       console.log("questionNumber: " + questionNumber)
       console.log("maxQuestions: " + maxQuestions)
-      if (questionNumber >= maxQuestions){
+      if (parseInt(questionNumber) >= parseInt(maxQuestions)){
         sessionStorage.setItem("questionNumber", 0);
         showResults()
       }else{
@@ -81,12 +81,6 @@
       $("#result").val("")
       $("#validation").hide()
       
-      
-
-      if (questionNumber >=  maxQuestions){
-        $("#nextButton").hide();
-      }
-
       let number1 = randomNumber(LEVELS[level]["min"], LEVELS[level]["max"])
       let number2 = randomNumber(LEVELS[level]["min"], LEVELS[level]["max"])
       if ( number1 > number2){
@@ -106,7 +100,14 @@
           $("#operator").text("+");
           break; 
       }
-      $("#nextButton").prop("disabled", true )
+      console.log("questionNumber: " + questionNumber)
+      console.log("maxQuestions: " + maxQuestions)
+      if (parseInt(questionNumber) >=  parseInt(maxQuestions)){
+        console.log(" questionNumber >=  maxQuestions ")
+        $("#nextButton").hide();
+      }else{
+        $("#nextButton").prop("disabled", true )
+      }
       $("#submitButton").prop( "disabled", false );
 
     }
