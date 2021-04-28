@@ -13,6 +13,7 @@
     var category = sessionStorage.getItem("category");
     var operation = sessionStorage.getItem("category");
     var questionNumber = sessionStorage.getItem("questionNumber");
+    $("#pageTitle").text(category) 
     var results = {}
     results["questions"] = []
     function randomNumber(min, max) { 
@@ -53,15 +54,18 @@
         
       }
       results["questions"].push(questionResult)
-
+      let questionNumber = sessionStorage.getItem("questionNumber");
+      console.log("questionNumber: " + questionNumber)
+      console.log("maxQuestions: " + maxQuestions)
       if (questionNumber >= maxQuestions){
         showResults()
         let level = sessionStorage.getItem("currentLevel")
-        if ( level >= 5){
-          $("#nextButton").hide()
-        } 
+        sessionStorage.setItem("questionNumber", 0);
         level++;
         sessionStorage.setItem("currentLevel", level)
+        if ( level >= 5){
+          showResults()
+        } 
       }else{
         $("#nextButton").show()
         $("#nextButton").prop("disabled", false )
@@ -70,14 +74,20 @@
     }
     function getNextQuestion(){
       let level = (sessionStorage.getItem("currentLevel")).toString()
+      let questionNumber = sessionStorage.getItem("questionNumber");
+      questionNumber++
+      sessionStorage.setItem("questionNumber", questionNumber);
+
+      $("#levelTitle").text("Level " + level)
+      $("#questionTitle").text("Question " + questionNumber)
       console.log("level:" + level)
       console.log("operation: " + operation)
       console.log(JSON.stringify(LEVELS))
       $("#result").prop( "disabled", false );
       $("#result").val("")
       $("#validation").hide()
-      questionNumber++
-      sessionStorage.setItem("questionNumber", questionNumber);
+      
+      
 
       if (questionNumber >=  maxQuestions){
         $("#nextButton").hide();
@@ -104,6 +114,7 @@
       }
       $("#nextButton").prop("disabled", true )
       $("#submitButton").prop( "disabled", false );
+
     }
     function showResults(){
       console.log(JSON.stringify(results));
@@ -193,7 +204,13 @@
 </head>
 <body class='bg-white'>
   <div class="container">
-    <h1 id="title">Subtraction</h1>
+    <h1 id="pageTitle"></h1>
+    <div class="row" >
+      <p id="levelTitle"></p>
+    </div>
+    <div class="row" >
+      <p id="questionTitle"></p>
+    </div>
     <div class="row">
       <div class="col-1">
         <p class="question" id="addend-1"></p>
