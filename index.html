@@ -12,9 +12,25 @@ function saveCategory(button){
   sessionStorage.setItem("questionNumber", 0);
   sessionStorage.setItem("testSize", 20);
   sessionStorage.setItem("allTests", "");
-  window.location.href="maths/arithmetic/numbers.html"
+  switch(button.value){
+    case 'addition':
+    case 'subtraction': 
+      window.location.href="maths/arithmetic/numbers.html"
+      break;
+    case 'comparison':
+      window.location.href="maths/comparison/comparison.html"
+  }
+  
 }
 </script>
+<style>
+  .row{
+    margin-top: 2%;
+  }
+  .btn-group {
+    margin-right: 4%;
+  }
+</style>
 <body>
   <br/>
   <div class="container">
@@ -23,12 +39,21 @@ function saveCategory(button){
       <div class="col-4">
         <h4>What do you want to practice?</h4>
       </div>
+    </div>
+    <div class="row">
       <div class="col-6">
         <div class="btn-group" role="group">
           <button type="button" class="btn btn-secondary" value="addition" onclick="saveCategory(this)">Addition</button>
         </div>
         <div class="btn-group" role="group">
           <button type="button" class="btn btn-secondary" value="subtraction" onclick="saveCategory(this)">Subtraction</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-secondary" value="comparison" onclick="saveCategory(this)">Comparison</button>
         </div>
       </div>
     </div>

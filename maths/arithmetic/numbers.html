@@ -20,6 +20,13 @@
       let randomNum = Math.random() * (max - min) + min;
       return Math.floor(randomNum)
     } 
+    function selectLevel(button){
+      let level = button.value;
+      console.log(button.value)
+      sessionStorage.setItem("currentLevel", parseInt(level));
+      sessionStorage.setItem("questionNumber", 0);
+      getNextQuestion()
+    }
 
     function checkAnswer(){
       $("#submitButton").prop( "disabled", true );
@@ -229,6 +236,9 @@
       margin-top: 2%;
     }
 
+    .btn-group {
+      margin-right: 4%;
+    }
     
     /* For mobile phones: */
 [class*="col-"] {
@@ -253,6 +263,32 @@
   </style>
 </head>
 <body class='bg-white'>
+  <div class="container">
+    <div class='row'>
+      <div class="col-12">
+        <h2>Select Level</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-warning" value="1" onclick="selectLevel(this)">Level 1</button>
+        </div>
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-warning" value="2" onclick="selectLevel(this)">Level 2</button>
+        </div>
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-warning" value="3" onclick="selectLevel(this)">Level 3</button>
+        </div>
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-warning" value="4" onclick="selectLevel(this)">Level 4</button>
+        </div>
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-warning" value="5" onclick="selectLevel(this)">Level 5</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="container">
     <h1 id="pageTitle"></h1>
     <div class="row" >
