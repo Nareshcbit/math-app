@@ -24,6 +24,16 @@
         `)
 
       }
+      function addCoin(image){
+        console.log("add Icon")
+        console.log(image.id)
+        $("#answerDiv").append(`
+          <p>hello</p>
+        `)
+      }
+      function removeCoin(){
+
+      }
     </script>
     <style>
       #answerDiv {
@@ -74,7 +84,7 @@
           </div>
           <div class="row coin-buttons">
             <div class="col-6">
-              <img id="penny-add" src="../images/add-2.png" width="20" height="20">
+              <img id="penny-add" onclick="addCoin(this)" src="../images/add-2.png" width="20" height="20">
             </div>
             <div class="col-6">
               <img id="penny-remove" src="../images/remove-2.png" width="20" height="20">
