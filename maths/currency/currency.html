@@ -1,0 +1,70 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"></link>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      function allowDrop(ev) {
+        ev.preventDefault();
+      }
+
+      function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+        $("#imagesDiv").append(`
+          <img id="drag2" src="../images/img_logo.gif" draggable="true" ondragstart="drag(event)" width="336" height="69">
+        `)
+      }
+
+      function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        ev.target.appendChild(document.getElementById(data));
+      }
+    </script>
+    <style>
+      #answerDiv {
+        width: 350px;
+        height: 70px;
+        padding: 10px;
+        border: 1px solid #aaaaaa;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Coins and Currency</h1>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-warning" value="1" onclick="selectLevel(this)">Level 1</button>
+          </div>
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-warning" value="2" onclick="selectLevel(this)">Level 2</button>
+          </div>
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-warning" value="3" onclick="selectLevel(this)">Level 3</button>
+          </div>
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-warning" value="4" onclick="selectLevel(this)">Level 4</button>
+          </div>
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-warning" value="5" onclick="selectLevel(this)">Level 5</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" id="imagesDiv">
+      <p>Drag the W3Schools image into the rectangle:</p>
+
+      <div id="answerDiv" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="imagesDiv">
+        <img id="drag1" src="../images/img_logo.gif" draggable="true" ondragstart="drag(event)" width="336" height="69">
+      </div>
+    </div>
+  </body>
+</html>

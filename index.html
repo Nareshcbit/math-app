@@ -19,6 +19,10 @@ function saveCategory(button){
       break;
     case 'comparison':
       window.location.href="maths/comparison/comparison.html"
+      break;
+    case 'currency':
+      window.location.href="maths/currency/currency.html"
+      break; 
   }
   
 }
@@ -54,6 +58,13 @@ function saveCategory(button){
       <div class="col-6">
         <div class="btn-group" role="group">
           <button type="button" class="btn btn-secondary" value="comparison" onclick="saveCategory(this)">Comparison</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-secondary" value="currency" onclick="saveCategory(this)">Coins and Currency</button>
         </div>
       </div>
     </div>
