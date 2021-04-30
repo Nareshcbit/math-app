@@ -12,15 +12,17 @@
 
       function drag(ev) {
         ev.dataTransfer.setData("text", ev.target.id);
-        $("#imagesDiv").append(`
-          <img id="drag2" src="../images/img_logo.gif" draggable="true" ondragstart="drag(event)" width="336" height="69">
-        `)
       }
 
       function drop(ev) {
         ev.preventDefault();
         var data = ev.dataTransfer.getData("text");
         ev.target.appendChild(document.getElementById(data));
+        
+        $("#imagesDiv").append(`
+          <img id="drag2" src="../images/img_logo.gif" draggable="true" ondragstart="drag(event)" width="336" height="69">
+        `)
+
       }
     </script>
     <style>
@@ -29,6 +31,9 @@
         height: 70px;
         padding: 10px;
         border: 1px solid #aaaaaa;
+      }
+      .coin {
+        height: 80px;
       }
     </style>
   </head>
@@ -58,13 +63,36 @@
       </div>
     </div>
 
-    <div class="container" id="imagesDiv">
+    <div class="container">
       <p>Drag the W3Schools image into the rectangle:</p>
-
-      <div id="answerDiv" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-      <div id="imagesDiv">
-        <img id="drag1" src="../images/img_logo.gif" draggable="true" ondragstart="drag(event)" width="336" height="69">
+      <div class="row" id="imagesDiv">
+        <div class="col-1">
+          <div class="row coin">
+            <div class="col-12">
+              <img id="penny" src="../images/penny_head.png" width="60" height="60">
+            </div>
+          </div>
+          <div class="row coin-buttons">
+            <div class="col-6">
+              <img id="penny-add" src="../images/add-2.png" width="20" height="20">
+            </div>
+            <div class="col-6">
+              <img id="penny-remove" src="../images/remove-2.png" width="20" height="20">
+            </div>
+          </div>
+        </div>
+        <div class="col-1 coin">
+          <img id="nickel" src="../images/nickel_head.png" width="60" height="60">
+        </div>
+        <div class="col-1 coin">
+          <img id="dime" src="../images/dime_head.png" width="60" height="60">
+        </div>
+        <div class="col-1 coin">
+          <img id="quarter" src="../images/quarter_head.png" width="60" height="60">
+        </div>
       </div>
+      <div id="answerDiv" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      
     </div>
   </body>
 </html>
