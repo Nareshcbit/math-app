@@ -180,6 +180,10 @@
 
       }
       function cleanSlate(){
+        submittedAnswer = false;
+        $("#submitButton").prop( "disabled", false );
+        $("#nextButton").prop( "disabled", true );
+        $("#marks").html("")
         let divIds = ["dollarDiv", "halfDollarDiv", "quarterDiv", "dimeDiv", "nickelDiv", "pennyDiv"]
         for ( let i=0; i<divIds.length; i++){
           let images = document.getElementById(divIds[i]).getElementsByTagName("img");
@@ -194,6 +198,7 @@
       }
       function getNextQuestion(){
         cleanSlate()
+
         CONFIG = getCoinConfig()
         console.log("Expected: " + CONFIG["expectedCents"])
         while ( CONFIG["expectedCents"] == 0 ){
@@ -224,7 +229,30 @@
       }
  
       function checkAnswer(){
-        console.log("hello world")
+        $("#submitButton").prop( "disabled", true );
+        submittedAnswer = true;
+        $("#nextButton").prop( "disabled", false );
+        let expectedAnswer = parseInt($("#answer").text())
+        let userAnswer = (
+          parseInt($("#dollar-count").text()) * 100 +
+          parseInt($("#halfdollar-count").text()) * 50 +
+          parseInt($("#quarter-count").text()) * 25 +
+          parseInt($("#dime-count").text()) * 10 +
+          parseInt($("#nickel-count").text()) * 5 + 
+          parseInt($("#penny-count").text()) * 1
+        )
+        console.log("expectedAnswer: " + expectedAnswer)
+        console.log("userAnswer: " + userAnswer)
+
+        if ( expectedAnswer == userAnswer){
+          $("#marks").html(
+            `Answer: <span class="text-success">Correct</span>`
+          )
+        }else{
+          $("#marks").html(
+            `Answer: <span class="text-danger">Incorrect</span>`
+          )
+        }
       }
       
       function getCoinConfig(){
@@ -265,7 +293,6 @@
       $(function() {
         getNextQuestion()
         document.getElementById("submitButton").onclick = function(){
-          console.log("hello")
           checkAnswer()
         }
       }) 
@@ -466,6 +493,15 @@
               <p class="coinCount" id="penny-count">0</p>
             </div>
             <div class="col-4"></div>
+          </div>
+        </div>
+      </div>
+      <div class="row" id="marksDiv">
+        <div class='col-12'>
+          <div class='row'>
+            <div class="col-12">
+              <h5 class="font-weight-bold" id=marks></h5>
+            </div>
           </div>
         </div>
       </div>
