@@ -29,29 +29,139 @@
         console.log("add Icon")
         console.log(image.id)
         let imageSrc = "../images/penny_head.png"
+        let currentCount = null;
+        let nextCount = null;
         switch(image.id){
           case 'halfdollar-add':
             imageSrc = "../images/half_dollar_head.png"
+            currentCount = $("#halfdollar-count").text()
+            nextCount = parseInt(currentCount) + 1;
+            $("#halfdollar-count").text(nextCount)
+            $("#halfDollarDiv").append(`
+              <img class="penny" src="${imageSrc}" width="80vw" height="80vw">
+            `)
             break;
           case 'quarter-add':
             imageSrc = "../images/quarter_head.png"
+            currentCount = $("#quarter-count").text()
+            nextCount = parseInt(currentCount) + 1;
+            $("#quarter-count").text(nextCount)
+            $("#quarterDiv").append(`
+              <img class="penny" src="${imageSrc}" width="80vw" height="80vw">
+            `)
             break;
           case 'dime-add':
             imageSrc = "../images/dime_head.png"
+            currentCount = $("#dime-count").text()
+            nextCount = parseInt(currentCount) + 1;
+            $("#dime-count").text(nextCount)
+            $("#dimeDiv").append(`
+              <img class="penny" src="${imageSrc}" width="80vw" height="80vw">
+            `)
             break;
           case 'nickel-add':
             imageSrc = "../images/nickel_head.png"
+            currentCount = $("#nickel-count").text()
+            nextCount = parseInt(currentCount) + 1;
+            $("#nickel-count").text(nextCount)
+            $("#nickelDiv").append(`
+              <img class="penny" src="${imageSrc}" width="80vw" height="80vw">
+            `)
             break;
           case 'penny-add':
+            currentCount = $("#penny-count").text()
+            nextCount = parseInt(currentCount) + 1;
+            $("#penny-count").text(nextCount)
             imageSrc = "../images/penny_head.png"
+            $("#pennyDiv").append(`
+              <img class="penny" src="${imageSrc}" width="80vw" height="80vw">
+            `)
             break;
         }
 
-        $("#answerDiv").append(`
-          <img class="penny" src="${imageSrc}" width="80vw" height="80vw">
-        `)
+
+
       }
-      function removeCoin(){
+      function removeCoin(image){
+        console.log("remove Icon")
+        console.log(image.id)
+        let imageSrc = "../images/penny_head.png"
+        let currentCount = null;
+        let nextCount = null;
+        switch(image.id){
+          case 'halfdollar-remove':
+            currentCount = parseInt( $("#halfdollar-count").text() )
+            if ( currentCount >= 1) {
+              nextCount = currentCount - 1;
+              $("#halfdollar-count").text(nextCount)
+              let images = document.getElementById("halfDollarDiv").getElementsByTagName("img");
+              try{
+                images[0].parentNode.removeChild(images[0])
+              }catch (ex) {
+
+              }
+              console.log("images: " + images.length)
+            }
+            break;
+          case 'quarter-remove':
+            currentCount = parseInt( $("#quarter-count").text() )
+            console.log ( "currentCount: " + currentCount)
+            if ( currentCount >= 1) {
+              nextCount = currentCount - 1;
+              $("#quarter-count").text(nextCount)
+              let images = document.getElementById("quarterDiv").getElementsByTagName("img");
+              try{
+                images[0].parentNode.removeChild(images[0])
+              }catch (ex) {
+
+              }
+            }
+            break;
+          case 'dime-remove':
+            currentCount = parseInt( $("#dime-count").text() )
+            console.log ( "currentCount: " + currentCount)
+            if ( currentCount >= 1) {
+              nextCount = currentCount - 1;
+              $("#dime-count").text(nextCount)
+              let images = document.getElementById("dimeDiv").getElementsByTagName("img");
+              try{
+                images[0].parentNode.removeChild(images[0])
+              }catch (ex) {
+
+              }
+            }
+            break;
+          case 'nickel-remove':
+            currentCount = parseInt( $("#nickel-count").text() )
+            console.log ( "currentCount: " + currentCount)
+            if ( currentCount >= 1) {
+              nextCount = currentCount - 1;
+              $("#nickel-count").text(nextCount)
+              let images = document.getElementById("nickelDiv").getElementsByTagName("img");
+              try{
+                images[0].parentNode.removeChild(images[0])
+              }catch (ex) {
+
+              }
+            }
+            break;
+          case 'penny-remove':
+            currentCount = parseInt( $("#penny-count").text() )
+            console.log ( "currentCount: " + currentCount)
+            if ( currentCount >= 1) {
+              nextCount = currentCount - 1;
+              $("#penny-count").text(nextCount)
+              let images = document.getElementById("pennyDiv").getElementsByTagName("img");
+              try{
+                images[0].parentNode.removeChild(images[0])
+              }catch (ex) {
+
+              }
+            }
+            break;
+        }
+
+        
 
       }
 
@@ -67,11 +177,15 @@
         border: 1px solid #aaaaaa;
       }
       .coin-group{
-        margin-right: 4vw;
+        margin-right: 2vw;
         margin-bottom: 2vw;
+        margin-left: 2vw;
       }
       .coin {
         height: 80px;
+      }
+      .coinCount{
+        font-size: 3vw;
       }
     </style>
   </head>
@@ -102,8 +216,34 @@
     </div>
 
     <div class="container">
+      <div class="row">
+        <p id="question"></p>
+      </div>
       <p>Drag the W3Schools image into the rectangle:</p>
       <div class="row" id="imagesDiv">
+        <div class="col-2 coin-group">
+          <div class="row coin">
+            <div class="col-12">
+              <img id="dollar-reference" src="../images/dollar_head.png" width="160vw" height="80vw">
+            </div>
+          </div>
+          <div class="row coin-buttons">
+            <div class="col-3"></div>
+            <div class="col-3">
+              <img id="dollar-add" onclick="addCoin(this)" src="../images/add-2.png" width="20" height="20">
+            </div>
+            <div class="col-3">
+              <img id="dollar-remove" onclick="removeCoin(this)" src="../images/remove-2.png" width="20" height="20">
+            </div>
+          </div>
+          <div class="row coinCountDiv" >
+            <div class="col-4"></div>
+            <div class="col-4">
+              <p class="coinCount" id="dollar-count">0</p>
+            </div>
+            <div class="col-4"></div>
+          </div>
+        </div>
         <div class="col-1 coin-group">
           <div class="row coin">
             <div class="col-12">
@@ -118,10 +258,10 @@
               <img id="halfdollar-remove" onclick="removeCoin(this)" src="../images/remove-2.png" width="20" height="20">
             </div>
           </div>
-          <div class="row coin-count" >
+          <div class="row coinCountDiv" >
             <div class="col-4"></div>
             <div class="col-4">
-              <p>0</p>
+              <p class="coinCount" id="halfdollar-count">0</p>
             </div>
             <div class="col-4"></div>
           </div>
@@ -140,10 +280,10 @@
               <img id="quarter-remove" onclick="removeCoin(this)" src="../images/remove-2.png" width="20" height="20">
             </div>
           </div>
-          <div class="row coin-count" >
+          <div class="row coinCountDiv" >
             <div class="col-4"></div>
             <div class="col-4">
-              <p>0</p>
+              <p class="coinCount" id="quarter-count">0</p>
             </div>
             <div class="col-4"></div>
           </div>
@@ -162,10 +302,10 @@
               <img id="dime-remove" onclick="removeCoin(this)" src="../images/remove-2.png" width="20" height="20">
             </div>
           </div>
-          <div class="row coin-count" >
+          <div class="row coinCountDiv" >
             <div class="col-4"></div>
             <div class="col-4">
-              <p>0</p>
+              <p class="coinCount" id="dime-count">0</p>
             </div>
             <div class="col-4"></div>
           </div>
@@ -184,10 +324,10 @@
               <img id="nickel-remove" onclick="removeCoin(this)" src="../images/remove-2.png" width="20" height="20">
             </div>
           </div>
-          <div class="row coin-count" >
+          <div class="row coinCountDiv" >
             <div class="col-4"></div>
             <div class="col-4">
-              <p>0</p>
+              <p class="coinCount" id="nickel-count">0</p>
             </div>
             <div class="col-4"></div>
           </div>
@@ -206,16 +346,22 @@
               <img id="penny-remove" onclick="removeCoin(this)" src="../images/remove-2.png" width="20" height="20">
             </div>
           </div>
-          <div class="row coin-count" >
+          <div class="row coinCountDiv" >
             <div class="col-4"></div>
             <div class="col-4">
-              <p>0</p>
+              <p class="coinCount" id="penny-count">0</p>
             </div>
             <div class="col-4"></div>
           </div>
         </div>
       </div>
-      <div id="answerDiv" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      <div id="answerDiv" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <div id="halfDollarDiv"></div>
+        <div id="quarterDiv"></div>
+        <div id="dimeDiv"></div>
+        <div id="nickelDiv"></div>
+        <div id="pennyDiv"></div>
+      </div>
       
     </div>
   </body>
