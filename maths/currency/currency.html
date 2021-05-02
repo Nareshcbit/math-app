@@ -6,7 +6,10 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <script type="text/javascript">
-      
+      function randomNumber(min, max) { 
+        let randomNum = Math.random() * (max - min) + min;
+        return Math.floor(randomNum)
+      }
       function allowDrop(ev) {
         ev.preventDefault();
       }
@@ -32,6 +35,15 @@
         let currentCount = null;
         let nextCount = null;
         switch(image.id){
+          case 'dollar-add':
+            imageSrc = "../images/dollar_head.png"
+            currentCount = $("#dollar-count").text()
+            nextCount = parseInt(currentCount) + 1;
+            $("#dollar-count").text(nextCount)
+            $("#dollarDiv").append(`
+              <img class="penny" src="${imageSrc}" width="160vw" height="80vw">
+            `)
+            break;
           case 'halfdollar-add':
             imageSrc = "../images/half_dollar_head.png"
             currentCount = $("#halfdollar-count").text()
@@ -89,6 +101,20 @@
         let currentCount = null;
         let nextCount = null;
         switch(image.id){
+          case 'dollar-remove':
+            currentCount = parseInt( $("#dollar-count").text() )
+            if ( currentCount >= 1) {
+              nextCount = currentCount - 1;
+              $("#dollar-count").text(nextCount)
+              let images = document.getElementById("dollarDiv").getElementsByTagName("img");
+              try{
+                images[0].parentNode.removeChild(images[0])
+              }catch (ex) {
+
+              }
+              console.log("images: " + images.length)
+            }
+            break;
           case 'halfdollar-remove':
             currentCount = parseInt( $("#halfdollar-count").text() )
             if ( currentCount >= 1) {
@@ -164,17 +190,96 @@
         
 
       }
+      function cleanSlate(){
+        let divIds = ["dollarDiv", "halfDollarDiv", "quarterDiv", "dimeDiv", "nickelDiv", "pennyDiv"]
+        for ( let i=0; i<divIds.length; i++){
+          let images = document.getElementById(divIds[i]).getElementsByTagName("img");
+          for ( let j=0; j<images.length; j++){
+            images[j].parentNode.removeChild(images[j])
+          }
+        }
+        $("p.coinCount").each(function(){
+          $(this).text(0)
+        })
 
+      }
+      function getNextQuestion(){
+        cleanSlate()
+        CONFIG = getCoinConfig()
+        console.log("Expected: " + CONFIG["expectedCents"])
+        while ( CONFIG["expectedCents"] == 0 ){
+         console.log("retrying")
+         console.log("Expected: " + CONFIG["expectedCents"])
+         CONFIG = getCoinConfig()
+        }
+        let answer = CONFIG["expectedCents"];
+        let dollars = Math.floor(answer/100);
+        let cents = Math.round( ((answer/100) % 1) * 100 );
+        let question = "Give me " + dollars +  " $ and " + cents + " cents"
+        $("#question").html(
+          `How would you give <span class="h4 text-danger"> $${dollars}.${cents}</span> to the shopkeeper using below coins?`
+        )
+        $("#answer").text(answer)
+        let keys = Object.keys(CONFIG)
+        for ( let i=0; i<keys.length; i++){
+          let coin = keys[i]
+          let divId = "#coin-group-" + coin;
+          console.log("coin: " + coin)
+          console.log(CONFIG[coin]["included"] )
+          if (CONFIG[coin]["included"]){
+            $(divId).show()
+          }else{
+            $(divId).hide()
+          }
+        }
+      }
+      function getCoinConfig(){
+        let config = {}
+        let coins = ["dollar", "halfdollar", "quarter", "dime", "nickel", "penny"]
+        let expectedCents = 0;
+
+        for ( let i=0; i<coins.length; i++){
+          let coin = coins[i];
+          config[coin] = {"included": false};
+          if ( (Math.random() < 0.5) ){
+            config[coin] = {"included": true};
+            switch(coin){
+              case 'dollar':
+                expectedCents += ( randomNumber(0, 2) * 100 );
+                break;
+              case 'halfdollar':
+                expectedCents += ( randomNumber(0, 2) * 50 );
+                break;
+              case 'quarter':
+                expectedCents += ( randomNumber(0, 2) * 5 );
+                break;
+              case 'dime':
+                expectedCents += ( randomNumber(0, 5) * 5 );
+                break;
+              case 'nickel':
+                expectedCents += ( randomNumber(0, 5) * 5 );
+                break;
+              case 'penny':
+                expectedCents += ( randomNumber(0, 10) * 1 );
+                break;
+            }
+          }
+        }
+        config["expectedCents"] = expectedCents
+        return config
+      }
       $(function() {
+        getNextQuestion()
       })
       
     </script>
     <style>
       #answerDiv {
-        width: 60vw;
-        height: 30vw;
+        width: 80vw;
+        height: 40vw;
         padding: 10px;
         border: 1px solid #aaaaaa;
+        margin-top: 2vw;
       }
       .coin-group{
         margin-right: 2vw;
@@ -186,6 +291,9 @@
       }
       .coinCount{
         font-size: 3vw;
+      }
+      #questionDiv{
+        margin-top: 2vw;
       }
     </style>
   </head>
@@ -216,12 +324,20 @@
     </div>
 
     <div class="container">
-      <div class="row">
-        <p id="question"></p>
+      <div class="row" id="questionDiv">
+        <div class="col-12">
+          <div class="row">
+            <div class="col-12">
+              <p class="h5 text-primary" id="question"></p>
+              <p id="answer" hidden></p>
+            </div>
+            
+          </div>
+        </div>
+        
       </div>
-      <p>Drag the W3Schools image into the rectangle:</p>
       <div class="row" id="imagesDiv">
-        <div class="col-2 coin-group">
+        <div class="col-2 coin-group" id="coin-group-dollar">
           <div class="row coin">
             <div class="col-12">
               <img id="dollar-reference" src="../images/dollar_head.png" width="160vw" height="80vw">
@@ -244,7 +360,7 @@
             <div class="col-4"></div>
           </div>
         </div>
-        <div class="col-1 coin-group">
+        <div class="col-1 coin-group" id="coin-group-halfdollar">
           <div class="row coin">
             <div class="col-12">
               <img id="halfdollar-reference" src="../images/half_dollar_head.png" width="80vw" height="80vw">
@@ -266,7 +382,7 @@
             <div class="col-4"></div>
           </div>
         </div>
-        <div class="col-1 coin-group">
+        <div class="col-1 coin-group" id="coin-group-quarter">
           <div class="row coin">
             <div class="col-12">
               <img id="quarter-reference" src="../images/quarter_head.png" width="80vw" height="80vw">
@@ -288,7 +404,7 @@
             <div class="col-4"></div>
           </div>
         </div>
-        <div class="col-1 coin-group">
+        <div class="col-1 coin-group" id="coin-group-dime">
           <div class="row coin">
             <div class="col-12">
               <img id="dime-reference" src="../images/dime_head.png" width="80vw" height="80vw">
@@ -310,7 +426,7 @@
             <div class="col-4"></div>
           </div>
         </div>
-        <div class="col-1 coin-group">
+        <div class="col-1 coin-group" id="coin-group-nickel">
           <div class="row coin">
             <div class="col-12">
               <img id="nickel-reference" src="../images/nickel_head.png" width="80vw" height="80vw">
@@ -332,7 +448,7 @@
             <div class="col-4"></div>
           </div>
         </div>
-        <div class="col-1 coin-group">
+        <div class="col-1 coin-group" id="coin-group-penny">
           <div class="row coin">
             <div class="col-12">
               <img id="penny-reference" src="../images/penny_head.png" width="80vw" height="80vw">
@@ -355,7 +471,16 @@
           </div>
         </div>
       </div>
+      <div class="row" id="buttonsDiv">
+        <div class="col-4">
+          <button type="button" id="submitButton" class="btn btn-info" onclick="checkAnswer()">Submit</button>
+        </div>
+        <div class="col-4">
+          <button type="button" id="nextButton" class="btn btn-info" onclick="getNextQuestion()">Next</button>
+        </div>
+      </div>
       <div id="answerDiv" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <div id="dollarDiv"></div>
         <div id="halfDollarDiv"></div>
         <div id="quarterDiv"></div>
         <div id="dimeDiv"></div>
