@@ -6,10 +6,23 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <script type="text/javascript">
+      var maxQuestions = sessionStorage.getItem("testSize")
+      var level = sessionStorage.getItem("currentLevel")
+      var questionNumber = sessionStorage.getItem("questionNumber");
+      var currentTestResults = {}
+      currentTestResults["questions"] = []
+
       var submittedAnswer = false;
       function randomNumber(min, max) { 
         let randomNum = Math.random() * (max - min) + min;
         return Math.floor(randomNum)
+      }
+      function selectLevel(button){
+        let level = button.value;
+        console.log(button.value)
+        sessionStorage.setItem("currentLevel", parseInt(level));
+        sessionStorage.setItem("questionNumber", 0);
+        getNextQuestion()
       }
       function addCoin(image){
         if ( submittedAnswer ){
@@ -180,6 +193,8 @@
 
       }
       function cleanSlate(){
+        $("#resultsDiv").hide();
+        $("#allTests").hide();
         submittedAnswer = false;
         $("#submitButton").prop( "disabled", false );
         $("#nextButton").prop( "disabled", true );
@@ -197,6 +212,13 @@
 
       }
       function getNextQuestion(){
+        let level = (sessionStorage.getItem("currentLevel")).toString()
+        let questionNumber = sessionStorage.getItem("questionNumber");
+        questionNumber++
+        sessionStorage.setItem("questionNumber", questionNumber);
+        $("#levelTitle").text("Level " + level)
+        $("#questionTitle").text("Question " + questionNumber)
+
         cleanSlate()
 
         CONFIG = getCoinConfig()
@@ -243,8 +265,10 @@
         )
         console.log("expectedAnswer: " + expectedAnswer)
         console.log("userAnswer: " + userAnswer)
+        let questionResult = "wrong";
 
         if ( expectedAnswer == userAnswer){
+          questionResult = "right";
           $("#marks").html(
             `Answer: <span class="text-success">Correct</span>`
           )
@@ -252,6 +276,19 @@
           $("#marks").html(
             `Answer: <span class="text-danger">Incorrect</span>`
           )
+        }
+        currentTestResults["questions"].push(questionResult)
+        let questionNumber = sessionStorage.getItem("questionNumber");
+        console.log("questionNumber: " + questionNumber)
+        console.log("maxQuestions: " + maxQuestions)
+        if (parseInt(questionNumber) >= parseInt(maxQuestions)){
+          
+          sessionStorage.setItem("questionNumber", 0);
+          console.log("showResults")
+          showResults()
+        }else{
+          $("#nextButton").show()
+          $("#nextButton").prop("disabled", false )
         }
       }
       
@@ -290,7 +327,84 @@
         config["expectedCents"] = expectedCents
         return config
       }
+      function showResults(){
+      console.log(JSON.stringify(currentTestResults));
+      let numRight = 0;
+      let numWrong = 0;
+      for ( let i=0; i<currentTestResults["questions"].length; i++){
+          if ( currentTestResults["questions"][i] == "right"){
+            numRight++
+            continue;
+          }
+          numWrong++;
+      }
+      let level = sessionStorage.getItem("currentLevel")
+      let allTests = sessionStorage.getItem("allTests")
+      if (!allTests){
+        allTests = {}
+      }else{
+        allTests = JSON.parse(allTests)
+      }
+      allTests[level] = {}
+      allTests[level]["results"] = currentTestResults
+      allTests[level]["right"] = numRight
+      allTests[level]["wrong"] = numWrong
+      sessionStorage.setItem("allTests", JSON.stringify(allTests))
+      currentTestResults = {}
+      currentTestResults["questions"] = []
+
+      sessionStorage.setItem("questionNumber", 0);
+      level++;
+      sessionStorage.setItem("currentLevel", level)
+
+      if ( level > 5){
+        showReport()
+        $("#nextTest").hide()
+        $("#goToHome").show()
+      }else{
+        $('#allTests').hide()
+        $("#right").html(numRight)
+        $("#wrong").html(numWrong)
+        $("#resultsDiv").show()
+        $("#nextTest").show()
+        $("#goToHome").hide()
+      } 
+
+    }
+    function showReport(){
+      let allTests = sessionStorage.getItem("allTests")
+      if (!allTests){
+        allTests = {}
+      }else{
+        allTests = JSON.parse(allTests)
+      }
+      console.log(JSON.stringify(allTests))
+      var testIds = Object.keys(allTests) 
+      for ( let i=0; i<testIds.length; i++){
+        let testid = testIds[i]
+        let numRight = allTests[testid]["right"]
+        let numWrong = allTests[testid]["wrong"]
+        let tableRow = '<tr>'
+        tableRow += '<td>' + "Test " + testid + '</td>'
+        tableRow += '<td>' + numRight + '</td>'
+        tableRow += '<td>' + numWrong + '</td>'
+        tableRow += '</tr>'
+        $('#allTests tr:last').after(tableRow);
+      }
+      $('#allTests').show()
+    }
+    function nextTest(){
+      location.reload();
+    }
+    function goToHome(){
+      location.href = "../../index.html";
+    }
+    
       $(function() {
+        $("#resultsDiv").hide()
+        $("#nextTest").hide()
+        $("#goToHome").hide()
+        $('#allTests').hide()
         getNextQuestion()
         document.getElementById("submitButton").onclick = function(){
           checkAnswer()
@@ -349,6 +463,12 @@
     </div>
 
     <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <p id="levelTitle"></p>
+          <p id="questionTitle"></p>
+        </div>
+      </div>
       <div class="row" id="questionDiv">
         <div class="col-12">
           <div class="row">
@@ -359,7 +479,6 @@
             
           </div>
         </div>
-        
       </div>
       <div class="row" id="imagesDiv">
         <div class="col-2 coin-group" id="coin-group-dollar">
@@ -511,6 +630,52 @@
         </div>
         <div class="col-4">
           <button type="button" id="nextButton" class="btn btn-info" onclick="getNextQuestion()">Next</button>
+        </div>
+      </div>
+      <div class="row" id="resultsDiv">
+        <div class="col-4">
+          <div class="row">
+            <div class="col-6">
+              <p>Correct</p>
+            </div>
+            <div class="col-6 report value">
+              <p id="right"></p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <p>Incorrect</p>
+            </div>
+            <div class="col-6 report value">
+              <p id="wrong"></p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-5">
+              <button type="button" id="nextTest" class="btn btn-warning" onclick="nextTest()">Take next test</button>
+            </div>
+          </div>
+          <div class="row" id="reportDiv">
+            <div class="col-5">
+              <button type="button" id="showReport" class="btn btn-secondary" onclick="showReport()">Show progress</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <table class="table" id="allTests">
+            <tr>
+              <th>Test</th>
+              <th>Correct</th>
+              <th>InCorrect</th>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <button type="button" id="goToHome" class="btn btn-secondary" onclick="goToHome()">Home</button>
         </div>
       </div>
       <div id="answerDiv" ondrop="drop(event)" ondragover="allowDrop(event)">
