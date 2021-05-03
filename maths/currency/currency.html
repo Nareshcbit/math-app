@@ -283,10 +283,10 @@
         console.log("questionNumber: " + questionNumber)
         console.log("maxQuestions: " + maxQuestions)
         if (parseInt(questionNumber) >= parseInt(maxQuestions)){
-          
           sessionStorage.setItem("questionNumber", 0);
           console.log("showResults")
           showResults()
+          $("#nextButton").hide()
         }else{
           $("#nextButton").show()
           $("#nextButton").prop("disabled", false )
@@ -297,38 +297,49 @@
         let config = {}
         let coins = ["dollar", "halfdollar", "quarter", "dime", "nickel", "penny"]
         let expectedCents = 0;
-
+        let level = parseInt(sessionStorage.getItem("currentLevel"))
         for ( let i=0; i<coins.length; i++){
           let coin = coins[i];
           config[coin] = {"included": false};
-          if ( (Math.random() < 0.5) ){
-            config[coin] = {"included": true};
-            switch(coin){
-              case 'dollar':
+          switch(coin){
+            case 'dollar':
+              if ( level >= 5){
+                config[coin] = {"included": true};
                 expectedCents += ( randomNumber(0, 2) * 100 );
-                break;
-              case 'halfdollar':
+              }
+              break;
+            case 'halfdollar':
+              if ( level >= 4){
+                config[coin] = {"included": true};
                 expectedCents += ( randomNumber(0, 2) * 50 );
-                break;
-              case 'quarter':
+              }
+              break;
+            case 'quarter':
+              if ( level >= 3){
+                config[coin] = {"included": true};
                 expectedCents += ( randomNumber(0, 2) * 25 );
-                break;
-              case 'dime':
-                expectedCents += ( randomNumber(0, 5) * 10 );
-                break;
-              case 'nickel':
-                expectedCents += ( randomNumber(0, 5) * 5 );
-                break;
-              case 'penny':
-                expectedCents += ( randomNumber(0, 10) * 1 );
-                break;
-            }
+              }
+              break;
+            case 'dime':
+              if ( level >= 2){
+                config[coin] = {"included": true};
+                expectedCents += ( randomNumber(1, 5) * 10 );
+              }
+              break;
+            case 'nickel':
+              config[coin] = {"included": true};
+              expectedCents += ( randomNumber(1, 5) * 5 );
+              break;
+            case 'penny':
+              config[coin] = {"included": true};
+              expectedCents += ( randomNumber(1, 10) * 1 );
+              break;
           }
         }
         config["expectedCents"] = expectedCents
         return config
       }
-      function showResults(){
+    function showResults(){
       console.log(JSON.stringify(currentTestResults));
       let numRight = 0;
       let numWrong = 0;
