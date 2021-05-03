@@ -5,12 +5,23 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 </head>
 <script type="text/javascript">
+ 
 function saveCategory(button){
+  switch(window.location.protocol) {
+   case 'http:':
+   case 'https:':
+    sessionStorage.setItem("testSize", 20);
+     break;
+   case 'file:':
+    sessionStorage.setItem("testSize", 2);
+     break;
+   default: 
+    sessionStorage.setItem("testSize", 2);
+  }
   console.log(button.value)
   sessionStorage.setItem("category", button.value);
   sessionStorage.setItem("currentLevel", 1);
   sessionStorage.setItem("questionNumber", 0);
-  sessionStorage.setItem("testSize", 2);
   sessionStorage.setItem("allTests", "");
   switch(button.value){
     case 'addition':

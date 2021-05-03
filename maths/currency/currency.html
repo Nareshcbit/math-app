@@ -201,10 +201,8 @@
         $("#marks").html("")
         let divIds = ["dollarDiv", "halfDollarDiv", "quarterDiv", "dimeDiv", "nickelDiv", "pennyDiv"]
         for ( let i=0; i<divIds.length; i++){
-          let images = document.getElementById(divIds[i]).getElementsByTagName("img");
-          for ( let j=0; j<images.length; j++){
-            images[j].parentNode.removeChild(images[j])
-          }
+          let divId ="#" + divIds[i] 
+          $(divId + " img").remove();
         }
         $("p.coinCount").each(function(){
           $(this).text(0)
@@ -230,7 +228,10 @@
         }
         let answer = CONFIG["expectedCents"];
         let dollars = Math.floor(answer/100);
-        let cents = Math.round( ((answer/100) % 1) * 100 );
+        let cents = "" + Math.round( ((answer/100) % 1) * 100 );
+        if ( cents.length == 1){
+          cents = "0" + cents;
+        }
         let question = "Give me " + dollars +  " $ and " + cents + " cents"
         $("#question").html(
           `How would you give <span class="h4 text-danger"> $${dollars}.${cents}</span> to the shopkeeper using below coins?`
@@ -310,10 +311,10 @@
                 expectedCents += ( randomNumber(0, 2) * 50 );
                 break;
               case 'quarter':
-                expectedCents += ( randomNumber(0, 2) * 5 );
+                expectedCents += ( randomNumber(0, 2) * 25 );
                 break;
               case 'dime':
-                expectedCents += ( randomNumber(0, 5) * 5 );
+                expectedCents += ( randomNumber(0, 5) * 10 );
                 break;
               case 'nickel':
                 expectedCents += ( randomNumber(0, 5) * 5 );
@@ -432,7 +433,7 @@
         font-size: 3vw;
       }
       #questionDiv{
-        margin-top: 2vw;
+        margin-top: 0vw;
       }
     </style>
   </head>
@@ -461,12 +462,15 @@
         </div>
       </div>
     </div>
-
+    <br/>
     <div class="container">
       <div class="row">
         <div class="col-12">
+          <p><span id="levelTitle"></span> / <span id="questionTitle"></span></p>
+          <!--
           <p id="levelTitle"></p>
           <p id="questionTitle"></p>
+          -->
         </div>
       </div>
       <div class="row" id="questionDiv">
@@ -678,7 +682,7 @@
           <button type="button" id="goToHome" class="btn btn-secondary" onclick="goToHome()">Home</button>
         </div>
       </div>
-      <div id="answerDiv" ondrop="drop(event)" ondragover="allowDrop(event)">
+      <div id="answerDiv" ondrop="drop(event)" ondragover="allowDrop(event)" hidden>
         <div id="dollarDiv"></div>
         <div id="halfDollarDiv"></div>
         <div id="quarterDiv"></div>
