@@ -34,6 +34,9 @@ function saveCategory(button){
     case 'currency':
       window.location.href="maths/currency/currency.html"
       break; 
+    case 'time':
+      window.location.href="maths/time/time.html"
+      break;
   }
   
 }
@@ -84,7 +87,10 @@ function saveCategory(button){
       </div>
       <div class="col-6">
         <div class="btn-group" role="group">
-          <button type="button" class="btn btn-secondary" value="currency" onclick="saveCategory(this)">Coins and Currency</button>
+          <button type="button" class="btn btn-secondary" value="currency" onclick="saveCategory(this)">Money</button>
+        </div>
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-secondary" value="time" onclick="saveCategory(this)">Time</button>
         </div>
       </div>
     </div>
