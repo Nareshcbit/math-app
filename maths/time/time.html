@@ -6,6 +6,14 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <script type="text/javascript">
+      var hh;
+      var mm;
+      function getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1) + min);
+      }
+
       function drawClock(canvasId, hh, mm) {
         var canvas = document.getElementById(canvasId);
         var ctx = canvas.getContext("2d");
@@ -104,16 +112,68 @@
         getNextQuestion()
       }
       function getNextQuestion(){
+        $("#marks").empty();
+        console.log("getNextQuestion")
+        var canvasDiv = document.getElementById("canvasDiv");
+        $("#canvasDiv").empty();
+        $("#canvasDiv").html(`
+          <canvas id="canvas" width="200%" height="200%"
+            style="background-color:#ffffff">
+          </canvas>
+        `)
+        var canvas = document.getElementById("canvas");
+        const context = canvas.getContext('2d');
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        let mhandValues = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+        hh = getRandomInt(1, 12)
+        mm = mhandValues[Math.floor(Math.random() * mhandValues.length)] * 5;
+        drawClock("canvas", hh, mm)
+        //drawClock("canvas2", hh, mm)
+      }
 
+      function checkAnswer(){
+        let answerhh = parseInt($("#answer-hh").val())
+        let answermm = parseInt($("#answer-mm").val())
+        let expectedhh =  hh
+        let expectedmm = mm
+        console.log("hh: " + hh)
+        console.log("mm: " + mm)
+        console.log("answerhh: " + answerhh)
+        console.log("answermm: " + answermm)
+        if ( answerhh == expectedhh && answermm == expectedmm){
+          $("#marks").html(
+            `Answer: <span class="text-success">Correct</span>`
+          )
+        }else{
+          $("#marks").html(
+            `Answer: <span class="text-danger">Incorrect</span>`
+          )
+        }
       }
       function cleanState(){
 
       }
+
+
       $(function() {
         initializeTest()
-        drawClock("canvas", 10, 30)
+        getNextQuestion()
       })
     </script>
+    <style>
+      #canvas{
+        width: 25vw;
+        height: 25vw;
+      }
+      #answer-colon, input[type="text"]{
+        font-size: 2em;
+        line-height: 2;
+      }
+      .buttonsDiv{
+        margin-top: 2vw;
+      }
+
+    </style>
   </head>
   <body>
     <div class="container">
@@ -148,21 +208,40 @@
       <div class="row">
         <div class="col-12">
           <p class="h5 text-primary" id="question">Question</p>
-          <p id="answer">Expected answer</p>
         </div>
       </div>
     </div>
     <div class="container">
-      <div class="row">
+      <div class="row question">
+        <div class="col-12" id="canvasDiv">
+        </div>
+      </div>
+      <div class="row question">
         <div class="col-12">
-          <canvas id="canvas" width="400" height="400"
-            style="background-color:#ffffff">
-          </canvas>
+          <p class="h5 text-primary" id="question-text">What is the time shown on the clock?</p>
+        </div>
+      </div>
+      <div class="row question">
+        <div class="col-12">
+          <input type="text" class="answer" id="answer-hh" required minlength="1" maxlength="2" size="2"><span id="answer-colon"> :</span>
+          <input type="text" class="answer" id="answer-mm" required minlength="1" maxlength="2" size="2">
+        </div>
+      </div>
+      <div class="row question">
+        <div class="col-12">
+          <h5 class="font-weight-bold" id=marks></h5>
         </div>
       </div>
     </div>
-    <div class="container">
-
+    <div class="container" >
+      <div class="row buttonsDiv">
+        <div class="col-3">
+          <button type="button" id="submitButton" class="btn btn-info" onclick="checkAnswer()">Submit</button>
+        </div>
+        <div class="col-3">
+          <button type="button" id="submitButton" class="btn btn-info" onclick="getNextQuestion()">Next</button>
+        </div>
+      </div>
     </div>
   </body>
 </html>
