@@ -8,6 +8,11 @@
     <script type="text/javascript">
       var hh;
       var mm;
+      var level = 1;
+      var questionNum = 0;
+      var maxQuestions = 20;
+      var numCorrect = 0;
+      var numWrong = 0;
       function getRandomInt(min, max) {
         min = Math.ceil(min);
         max = Math.floor(max);
@@ -112,7 +117,13 @@
         getNextQuestion()
       }
       function getNextQuestion(){
+        $("#nextButton").hide();
+        questionNum++;
+        $("#questionNum").text(questionNum)
+        $("#answer-hh").val('')
+        $("#answer-mm").val('')
         $("#marks").empty();
+
         console.log("getNextQuestion")
         var canvasDiv = document.getElementById("canvasDiv");
         $("#canvasDiv").empty();
@@ -129,6 +140,7 @@
         mm = mhandValues[Math.floor(Math.random() * mhandValues.length)] * 5;
         drawClock("canvas", hh, mm)
         //drawClock("canvas2", hh, mm)
+        $("#submitButton").prop( "disabled", false );
       }
 
       function checkAnswer(){
@@ -141,14 +153,21 @@
         console.log("answerhh: " + answerhh)
         console.log("answermm: " + answermm)
         if ( answerhh == expectedhh && answermm == expectedmm){
+          numCorrect++;
           $("#marks").html(
             `Answer: <span class="text-success">Correct</span>`
           )
         }else{
+          numWrong++;
           $("#marks").html(
             `Answer: <span class="text-danger">Incorrect</span>`
           )
         }
+
+        $("#report-right").text(numCorrect)
+        $("#report-wrong").text(numWrong)
+        $("#nextButton").show();
+        $("#submitButton").prop( "disabled", true );
       }
       function cleanState(){
 
@@ -207,7 +226,7 @@
     <div class="container">
       <div class="row">
         <div class="col-12">
-          <p class="h5 text-primary" id="question">Question</p>
+          <p class="h5 text-primary" id="question">Question <span id="questionNum"></span></p>
         </div>
       </div>
     </div>
@@ -239,7 +258,28 @@
           <button type="button" id="submitButton" class="btn btn-info" onclick="checkAnswer()">Submit</button>
         </div>
         <div class="col-3">
-          <button type="button" id="submitButton" class="btn btn-info" onclick="getNextQuestion()">Next</button>
+          <button type="button" id="nextButton" class="btn btn-info" onclick="getNextQuestion()">Next</button>
+        </div>
+      </div>
+    </div>
+    <div class="container" id="resultsDiv">
+      <div class="row">
+        <h4>Report</h4>
+      </div>
+      <div class="row" >
+        <div class="col-2">
+          <h5>Correct</h5>
+        </div>
+        <div class="col-2 report value">
+          <h5 id="report-right"></h5>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-2">
+          <h5>InCorrect</h5>
+        </div>
+        <div class="col-2 report value">
+          <h5 id="report-wrong"></h5>
         </div>
       </div>
     </div>
