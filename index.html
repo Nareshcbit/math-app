@@ -37,6 +37,9 @@ function saveCategory(button){
     case 'time':
       window.location.href="maths/time/time.html"
       break;
+    case 'flash-multiplication':
+      window.location.href="maths/flash/multiplication.html"
+      break;
   }
   
 }
@@ -91,6 +94,16 @@ function saveCategory(button){
         </div>
         <div class="btn-group" role="group">
           <button type="button" class="btn btn-secondary" value="time" onclick="saveCategory(this)">Time</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-3">
+        <h4>Flash Cards</h4>
+      </div>
+      <div class="col-6">
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-secondary" value="flash-multiplication" onclick="saveCategory(this)">Multiplication</button>
         </div>
       </div>
     </div>
