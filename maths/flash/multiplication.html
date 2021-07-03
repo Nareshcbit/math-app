@@ -12,9 +12,9 @@ var qbank=new Array;
 loadDB();
 
 function loadDB(){
-  const factor1 = Math.floor(Math.random() * 10) + 1
+  const factor1 = Math.floor(Math.random() * 9) + 2;
   for(i=0;i<20;i++){
-   let factor2 = Math.floor(Math.random() * 10) + 1;
+   let factor2 = Math.floor(Math.random() * 9) + 2;
    qbank[i]=[];
    qbank[i][0]= "" + factor1 + "*" + factor2;
    qbank[i][1]= factor1 * factor2;
