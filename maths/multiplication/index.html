@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Table</title>
+	  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"></link>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+    	var colorArray=["#019875","#1E8BC3","#D91E18","#D35400","#8E44AD","#C0392B"];
+
+    	var cardState="readyToBeClicked"
+    	var results={}
+    	var tableId = "12th Table"
+    	var level = 3
+    	var questionNumber = 0;
+    	var totalQuestions = 20;
+
+    	var CONFIG = {
+    		"levels": {
+    			"1": [1, 2, 3, 4, 5],
+    			"2": [5, 6, 7, 8, 9, 10],
+    			"3": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    		},
+    		"tables":{
+    			"2nd Table": [2],
+    			"3rd Table": [3],
+    			"4th Table": [4],
+    			"5th Table": [5],
+    			"6th Table": [6],
+    			"7th Table": [7],
+    			"8th Table": [8],
+    			"9th Table": [9],
+    			"10th Table": [10],
+    			"11th Table": [11],
+    			"12th Table": [12],
+    			"13th Table": [13],
+    			"14th Table": [14]
+    		} 
+    	}
+    	function loadNextQuestion(tableId, level){
+    		$("#answerWrongImage").attr("hidden", "hidden")
+    		$("#answerCorrectImage").attr("hidden", "hidden")
+    		$("#userAnswer").val("")
+    		$("#userAnswer").prop("disabled", false)
+    		questionNumber++;
+
+    		cardState="readyToBeClicked";
+    		var color1=colorArray[Math.floor(Math.random()*colorArray.length)];
+    		let tableArray = CONFIG["tables"][tableId]
+    		let factorsArray = CONFIG["levels"][level]
+
+    		let table = tableArray[Math.floor(Math.random()*tableArray.length)]
+    		let factor = factorsArray[Math.floor(Math.random()*factorsArray.length)];
+
+
+    		$("#cardArea").empty();
+
+ 			$("#cardArea").append('<div id="questionCard" class="card">' + table + "*" + factor + '</div>');
+ 			$("#cardArea").append('<div id="answerCard" class="card">' + (table * factor) + '</div>');
+ 			$("#questionCard").css("background-color",color1);
+ 			$("#answerCard").css("background-color","#34495E");
+
+ 			$("#question").text(table + " x " + factor)
+ 			$("#answer").text(table * factor)
+
+ 			results[questionNumber] = {
+ 				"number": questionNumber,
+ 				"question": table + " x " + factor,
+ 				"answer": table * factor,
+ 				"maxMarks": 1,
+ 				"userAnswer": "",
+ 				"userAnsweredCorrectly": false,
+ 				"marks": 0
+ 			}
+
+
+    	}	
+    	function evaluateAnswer(){
+    		$("#userAnswer").prop("disabled", true)
+    		console.log("evaluating answer")
+    		let userAnswer = $("#userAnswer").val()
+ 			results[questionNumber]["userAnswer"] = userAnswer
+ 			let cellId = "#C" + ( questionNumber - 1)
+ 			$(cellId + "question").html(results[questionNumber]["question"])
+ 			$(cellId + "yourAnswer").html(results[questionNumber]["userAnswer"])
+ 			$(cellId + "correctAnswer").html(results[questionNumber]["answer"])
+
+ 			if ( results[questionNumber]["answer"] == parseInt(userAnswer)){
+ 					results[questionNumber]["userAnsweredCorrectly"] = true;
+ 					results[questionNumber]["marks"] = results[questionNumber]["maxMarks"];
+ 					$("#answerCorrectImage").removeAttr("hidden")
+ 					$("#answerWrongImage").attr("hidden", "hidden")
+ 					$(cellId +"result").html("Correct")
+ 			}else{
+ 				$("#answerWrongImage").removeAttr("hidden")
+ 				$("#answerCorrectImage").attr("hidden", "hidden")
+ 				$(cellId+"result").html("Wrong")
+ 			}
+ 			console.log(results)
+
+ 			if ( questionNumber > totalQuestions){
+ 				$("#nextButton").attr("hidden", "hidden")
+ 				$(".hideme").removeClass("hideme")
+ 			}
+
+    	}
+
+    	function showCorrect(){
+    		console.log("Correct")
+    	}
+
+    	function showFalse(){
+    		console.log("False")
+    	}
+
+    	function initializeTest(tableNumber, levelNumber){
+    		console.log("InitializeTest: " + tableId + "::" + level)
+    		//var table = document.getElementById("resultsTable");
+    		$("#resultsTable").empty()
+    		$("#nextButton").removeAttr("hidden")
+    		results={}
+			questionNumber = 1;
+			tableId = tableNumber
+			level = levelNumber
+			totalQuestions = 10;
+
+			let headerRow= '<tr> <th></th>'
+			let resultsRow = '<tr><td>Result</td>'
+			let questionRow = '<tr class="hideme"><td class="hideme">Question</td>'
+			let yourAnswerRow = '<tr class="hideme" ><td class="hideme" >Your Answer</td>'
+			let correctAnswerRow = '<tr class="hideme"><td class="hideme">Correct Answer</td>'
+
+			for ( let i=0; i<totalQuestions; i++){
+				let cellId = "C" + (i+1);
+				let questionNumber = "Q" + (i+1)
+				headerRow  += "<th>" + questionNumber + "</th>"
+
+				resultsRow  += "<td id='" +  cellId + "result" +"'>" + "</td>"
+				questionRow  += "<td class='hideme' id='" +  cellId + "question" +"'>" + "</td>"
+				yourAnswerRow  += "<td class='hideme' id='" +  cellId + "yourAnswer" +"'>" + "</td>"
+				correctAnswerRow  += "<td class='hideme' id='" +  cellId + "correctAnswer" +"'>" + "</td>"
+
+			}
+			headerRow += "</tr>"
+			resultsRow += "</tr>"
+
+			var table = document.getElementById("resultsTable");
+			var row = table.insertRow(0);
+			row.innerHTML=headerRow
+
+			var row = table.insertRow(1);
+			row.innerHTML=resultsRow;
+
+			var row = table.insertRow(2);
+			row.innerHTML=questionRow;
+
+			var row = table.insertRow(3);
+			row.innerHTML=yourAnswerRow;
+
+			var row = table.insertRow(4);
+			row.innerHTML=correctAnswerRow;
+
+			loadNextQuestion(tableId, level);
+
+    	}
+
+
+
+    	$(document).ready(function () {
+			//initializeTest(tableId, 3)
+   			//loadNextQuestion(tableId, level);
+   			$("#nextButton").on("click",function(){
+   				evaluateAnswer()
+  				document.getElementById('questionCard').classList.remove('flipped'); 
+  				loadNextQuestion(tableId, level); 
+
+ 			});
+
+ 			$("#questionCard").on("click", function(){
+ 				
+ 				let classList = $("#questionCard").attr("class");
+ 				classList = classList.split(/\s+/);
+ 				let userAnswerDisabled = $("#userAnswer").prop("disabled")
+ 				if ( classList.indexOf("flipped") != -1 && userAnswerDisabled == false){
+ 					evaluateAnswer()
+ 				}
+
+ 				$("#userAnswer").prop("disabled", true)
+
+ 			})
+
+
+		})
+
+    </script>
+    <style>
+
+		.flipCard {
+		  -webkit-perspective: 800;
+		  -ms-perspective: 800;
+		  -moz-perspective: 800;
+		  -o-perspective: 800;
+		   width: 400px;
+		   height: 200px;
+		   position: relative;
+		   margin: 50px auto;
+		}
+		.flipCard .card.flipped {
+		  transform:rotatey(-180deg);
+		  -ms-transform:rotatey(-180deg); /* IE 9 */
+		  -moz-transform:rotatey(-180deg); /* Firefox */
+		  -webkit-transform:rotatey(-180deg); /* Safari and Chrome */
+		  -o-transform:rotatey(-180deg); /* Opera */
+		}
+		.flipCard .card {
+		  width: 100%;
+		  height: 100%;
+		  -webkit-transform-style: preserve-3d;
+		  -webkit-transition: 0.5s;
+		  -moz-transform-style: preserve-3d;
+		  -moz-transition: 0.5s;
+		  -ms-transform-style: preserve-3d;
+		  -ms-transition: 0.5s;
+		  -o-transform-style: preserve-3d;
+		  -o-transition: 0.5s;
+		  transform-style: preserve-3d;
+		  transition: 0.5s;
+		}
+		.flipCard .card .side {
+		  width: 100%;
+		  height: 100%;
+		  padding: 10px;
+		  cursor: pointer;
+		  position: absolute;
+		  box-sizing: border-box;
+		  z-index: 2;
+		  backface-visibility: hidden;  /* W3C */
+		  -webkit-backface-visibility: hidden; /* Safari & Chrome */
+		  -moz-backface-visibility: hidden; /* Firefox */
+		  -ms-backface-visibility: hidden; /* Internet Explorer */
+		  -o-backface-visibility: hidden; /* Opera */
+		  box-shadow: 0 0 10px rgba(0,0,0,0.6);
+		  overflow: auto;
+		}
+		.flipCard .card .back {
+		  background: white;
+		  color: black;
+		  transform:rotatey(-180deg);
+		  -ms-transform:rotatey(-180deg); /* IE 9 */
+		  -moz-transform:rotatey(-180deg); /* Firefox */
+		  -webkit-transform:rotatey(-180deg); /* Safari and Chrome */
+		  -o-transform:rotatey(-180deg); /* Opera */
+		}
+
+		.flipCard .card .front {
+		  font-family: Georgia;
+		  font-size: 3em;
+		  text-align: center;
+
+		  background-color: #7030a0;
+		  border: 3px solid white;
+		  color: white;
+
+		}
+		.flipCard .card .back {
+		  background-color: #dbb2f9;
+		  border: 3px solid white;
+		  text-align: center;
+		  color: black;
+		  padding-top: 50px;
+		  font-family: Georgia;
+		  font-size: 2em;
+		} 
+
+		.answerForm{
+		  -webkit-perspective: 800;
+		  -ms-perspective: 800;
+		  -moz-perspective: 800;
+		  -o-perspective: 800;
+		   width: 80px;
+		   position: relative;
+		   margin: auto;
+
+		}
+
+		#userAnswer{
+			height: 2em;
+			font-size: 2em;
+			text-align: center;
+
+		}
+
+		#buttonArea{
+			margin-bottom: 10px;
+		}
+
+		#nextButton{
+			width:80px;
+			text-align:center;
+			font-size:20px;
+			padding:10px;
+			cursor:pointer;
+			color:#efefef;
+			margin:auto;
+			margin-top:30px;
+			background-color:#019875;
+			border: 2px solid #1E824C;
+			border-radius:5px;
+			font-family:Montserrat,Arial;
+		}
+		#nextButton:hover{
+			opacity:.6;
+		}
+
+		.element{
+			width: 50%;
+			float: left;
+		}
+
+		#showResults{
+			margin-top:60px;
+		}
+
+		#resultsDiv{
+			margin-top:100px;
+		}
+
+		#resultsTable {
+		  font-family: Arial, Helvetica, sans-serif;
+		  border-collapse: collapse;
+		  width: 100%;
+		}
+
+		#resultsTable td, #resultsTable th {
+		  border: 1px solid #ddd;
+		  padding: 8px;
+		}
+
+		#resultsTable tr:nth-child(even){background-color: #f2f2f2;}
+
+		#resultsTable tr:hover {background-color: #ddd;}
+
+		#resultsTable th {
+		  padding-top: 12px;
+		  padding-bottom: 12px;
+		  text-align: left;
+		  background-color: #04AA6D;
+		  color: white;
+		}
+
+		.hideme{
+			visibility: hidden;
+		}
+
+		#tableSelection{
+			margin-top: 20px;
+			width: 100%;
+		}
+
+</style>
+</head>
+<body>
+	<div class="container"  >
+		 <div class="btn-group " id="tableSelection">
+		  <button onclick="initializeTest('6th Table', 3)">6th Table</button>
+		  <button onclick="initializeTest('7th Table', 3)">7th Table</button>
+		  <button onclick="initializeTest('8th Table', 3)">8th Table</button>
+		  <button onclick="initializeTest('9th Table', 3)">9th Table</button>
+		  <button onclick="initializeTest('12th Table', 3)">12th Table</button>
+		  <button onclick="initializeTest('13th Table', 3)">13th Table</button>
+		</div> 
+
+		<div class="element">
+			<div class="flipCard"> 
+			  <div class="card" onclick="this.classList.toggle('flipped');" id="questionCard"> 
+			    <div class="side front" id="question">Keyword</div> 
+			    <div class="side back" id="answer">Definition<br/>Explanation</div> 
+			  </div> 
+			</div> 
+			<div class="answerForm">
+				<input type="text" id="userAnswer" size="4" pattern="[0-9]+">
+			</div>
+			<div id="buttonArea">
+	 			<div id="nextButton">NEXT</div>
+	 		</div>
+		</div>
+		<div class="element">
+			<div id="showResults">
+				<img src="./correct.gif" id="answerCorrectImage" hidden >
+				<img src="./wrong.gif" id="answerWrongImage" hidden >
+			</div>
+		</div>
+	</div>
+
+	<div class="container" >
+		<div id="resultsDiv">
+			<table id="resultsTable">
+			</table>
+		</div>
+
+	</div>
+
+</body>
+</html>
