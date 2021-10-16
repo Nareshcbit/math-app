@@ -93,11 +93,11 @@
  					results[questionNumber]["marks"] = results[questionNumber]["maxMarks"];
  					$("#answerCorrectImage").removeAttr("hidden")
  					$("#answerWrongImage").attr("hidden", "hidden")
- 					$(cellId +"result").html("Correct")
+ 					$(cellId +"result").html('<img src="./greentick-64.ico" width="20" height="20">')
  			}else{
  				$("#answerWrongImage").removeAttr("hidden")
  				$("#answerCorrectImage").attr("hidden", "hidden")
- 				$(cellId+"result").html("Wrong")
+ 				$(cellId+"result").html('<img src="./redcross-64.ico" width="20" height="20">')
  			}
  			console.log(results)
 
